@@ -1,5 +1,10 @@
-import app from "@/app/app"
 import dotenv from "dotenv"
+
+// SERVERS
+import app from "@/app/app"
+import { redisConnection } from "./connections/redis"
+import mongodbConnection from "@/connections/mongodb"
+import { checkDB, postgresConnection } from "./connections/postgres"
 
 // DOTENV CONFIGURATION
 dotenv.config();
@@ -11,8 +16,18 @@ process.on("uncaughtException", (err: any) => {
 })
 
 // STARTS THE SERVER
-app.listen(process.env.PORT, () => {
-     console.info(`app running on port: ${process.env.PORT}`);
+app.listen(process.env.PORT, async () => {
+     try {
+          console.log(`application is running`);
+
+          // connections
+          await checkDB();
+          await mongodbConnection();
+          await postgresConnection();
+          await redisConnection();
+     } catch (error) {
+          console.error(error)
+     }
 })
 
 // HANDLE UNHANDLED REJECTIONS
