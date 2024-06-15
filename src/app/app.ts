@@ -3,9 +3,9 @@ import cors from "cors"
 import morgan from "morgan"
 import helmet from "helmet"
 import express from "express"
-import i18n, { setLocale } from "@/middlewares/i18n"
 import cookieParser from "cookie-parser"
 import mongoSanitize from "express-mongo-sanitize"
+import i18n, { setLocale } from "@/middlewares/i18n"
 
 // MIDDLEWARES
 import errorMiddleware from "@/middlewares/error"
