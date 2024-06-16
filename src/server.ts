@@ -2,8 +2,8 @@ import dotenv from "dotenv"
 
 // SERVERS
 import app from "@/app/app"
-import { redisConnection } from "./connections/redis"
 import mongodbConnection from "@/connections/mongodb"
+import { redisConnection } from "./connections/redis"
 import { checkDB, postgresConnection } from "./connections/postgres"
 
 // DOTENV CONFIGURATION
