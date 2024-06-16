@@ -11,7 +11,6 @@ mongoose.set("strictQuery", true);
 const mongodbConnection = async () => {
      await mongoose
           .connect(`${process.env.MONGO_URL}`)
-          .catch(error => console.error(error))
           .then(() => console.log("mongo db connected"));
 };
 

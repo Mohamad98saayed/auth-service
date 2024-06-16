@@ -1,8 +1,19 @@
 import dotenv from "dotenv";
-import { DataSource } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 
 // DOTENV CONFIGURATION
 dotenv.config();
+
+// MODELS
+import { User } from "@/models/postgres/user";
+import { Role } from "@/models/postgres/role";
+import { Avatar } from "@/models/postgres/avatar";
+import { Address } from "@/models/postgres/address";
+import { License } from "@/models/postgres/license";
+import { Document } from "@/models/postgres/documents";
+import { LicenseType } from "@/models/postgres/licenseType";
+import { DocumentType } from "@/models/postgres/documentType";
+import { LicenseImages } from "@/models/postgres/licenseImage";
 
 // CHECK IF DB EXISTS
 export const checkDB = async () => {
@@ -34,7 +45,7 @@ export const postgresServer = new DataSource({
      username: process.env.POSTGRES_USER,
      password: process.env.POSTGRES_PASS,
      database: process.env.POSTGRES_NAME,
-     entities: [],
+     entities: [User, Role, Avatar, Address, License, LicenseImages, LicenseType, Document, DocumentType],
      synchronize: true,
 })
 
@@ -42,6 +53,16 @@ export const postgresServer = new DataSource({
 export const postgresConnection = async () => {
      postgresServer
           .initialize()
-          .catch(error => console.error(error))
           .then(() => console.log("postgres connected"));
 }
+
+// REPOSITORIES
+export const userRepo: Repository<User> = postgresServer.getRepository(User);
+export const roleRepo: Repository<Role> = postgresServer.getRepository(Role);
+export const avatarRepo: Repository<Avatar> = postgresServer.getRepository(Avatar);
+export const addressRepo: Repository<Address> = postgresServer.getRepository(Address);
+export const licenseRepo: Repository<License> = postgresServer.getRepository(License);
+export const documentRepo: Repository<Document> = postgresServer.getRepository(Document);
+export const licenseTypeRepo: Repository<LicenseType> = postgresServer.getRepository(LicenseType);
+export const documentTypeRepo: Repository<DocumentType> = postgresServer.getRepository(DocumentType);
+export const licenseImageRepo: Repository<LicenseImages> = postgresServer.getRepository(LicenseImages);
