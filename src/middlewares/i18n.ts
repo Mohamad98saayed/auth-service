@@ -1,6 +1,6 @@
 import path from "path";
 import { I18n } from "i18n";
-import { Request, Response, NextFunction } from "express"
+import { Request, Response, NextFunction } from "express";
 
 // UTILS
 import catchAsync from "@/utils/catchAsync";
@@ -16,17 +16,11 @@ const i18n = new I18n({
      directory: path.join("src", "public", "locales"),
 })
 
-// AUTOMATICALLY CHANGE LOCALY MIDDLEWARE
+// AUTOMATICALLY CHANGE LOCALE MIDDLEWARE
 export const setLocale = catchAsync(async (req: Request, _res: Response, next: NextFunction) => {
-     const locale = req.query.locale;
-
-     if (locale && typeof locale === "string") {
-          i18n.setLocale(locale);
-     } else {
-          i18n.setLocale("en");
-     }
-
+     const locale = req.headers["accept-language"] || "en";
+     i18n.setLocale(locale);
      next()
 })
 
-export default i18n
+export default i18n;

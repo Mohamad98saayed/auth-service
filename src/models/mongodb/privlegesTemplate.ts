@@ -1,6 +1,9 @@
 import { Schema, model } from "mongoose";
 
-const privlegeTemplateSchema = new Schema({
+// TYPES
+import { PrivlegesTemplateSchema } from "@/types/models/privlegesTemplate";
+
+const privlegeTemplateSchema = new Schema<PrivlegesTemplateSchema>({
      roleId: {
           type: String,
           require: [true, "user id is required"]
