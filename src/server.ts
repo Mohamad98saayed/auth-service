@@ -15,20 +15,29 @@ process.on("uncaughtException", (err: any) => {
      process.exit(1);
 })
 
-// STARTS THE SERVER
-app.listen(process.env.PORT, async () => {
+// START THE SERRVER
+const runApp = async () => {
      try {
-          console.log(`application is running`);
-
-          // connections
+          // check if postgres db exists
           await checkDB();
-          await mongodbConnection();
+
+          // start the connection with the postgres server
           await postgresConnection();
+
+          // start the connection with mongo db
+          await mongodbConnection();
+
+          // start the connection with the redis server
           await redisConnection();
+
+          // listen to the server
+          app.listen(process.env.PORT, () => console.log("auth service is running"));
      } catch (error) {
-          console.error(error)
+          console.error(error);
      }
-})
+}
+
+runApp();
 
 // HANDLE UNHANDLED REJECTIONS
 process.on("unhandledRejection", (err: any) => {
