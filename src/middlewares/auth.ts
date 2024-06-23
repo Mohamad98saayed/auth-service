@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { Response, NextFunction } from "express";
 
 // MODELS
@@ -13,6 +13,7 @@ import ErrorHandler from "@/utils/errorHandler";
 // TYPES
 import { CustomRequest } from "@/types/general/general";
 import { PrivlegesSchema } from "@/types/models/privleges";
+import { CustomJWTPayload } from "@/types/general/general";
 
 // CHECKS IF USER IS LOGGED IN
 export const isAuthenticated = catchAsync(async (req: CustomRequest, _res: Response, next: NextFunction) => {
@@ -21,7 +22,7 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, _res: Respo
      if (!token) return next(new ErrorHandler(i18n.__("user-not-auth"), 401));
 
      // check if token still valid
-     const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`) as JwtPayload;
+     const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`) as CustomJWTPayload;
 
      // if valid check if user with the saved id exists
      const user = await userRepo.findOne({ where: { id: decodedToken.id } });
