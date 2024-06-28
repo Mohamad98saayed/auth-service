@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
 
 // MODELS
 import { AppBaseModel } from "./_base";
@@ -23,5 +23,6 @@ export class Address extends AppBaseModel {
 
      // RELATIONS
      @ManyToOne(() => User, (user) => user.addresses, { nullable: true })
+     @JoinColumn({ name: "user_id", referencedColumnName: "id" })
      userId!: User;
 }

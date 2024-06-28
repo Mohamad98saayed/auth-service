@@ -7,11 +7,14 @@ dotenv.config();
 // CONFIGURATION
 mongoose.set("strictQuery", true);
 
-// DB CONNECTION
-const mongodbConnection = async () => {
-     await mongoose
-          .connect(`${process.env.MONGO_URL}`)
-          .then(() => console.log("mongo db connected"));
+// MONGODB CONNECTION
+export const mongodbConnection = async () => {
+     try {
+          await mongoose.connect(process.env.MONGO_URL!);
+          console.log("MongoDB connected");
+     } catch (error) {
+          console.error("Error connecting to MongoDB:", error);
+     }
 };
 
 export default mongodbConnection;

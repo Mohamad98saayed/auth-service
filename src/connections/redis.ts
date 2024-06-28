@@ -13,7 +13,10 @@ export const redisServer = createClient({
 
 // REDIS CONNECTION
 export const redisConnection = async () => {
-     redisServer
-          .connect()
-          .then(() => console.log("redis server connected"))
-}
+     try {
+          await redisServer.connect();
+          console.log("Redis server connected");
+     } catch (error) {
+          console.error("Error connecting to Redis server:", error);
+     }
+};

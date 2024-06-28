@@ -1,3 +1,12 @@
 export interface PrivlegesTemplateSchema {
-     roleId: string;
+     // auth
+     canLogin: boolean;
+     canForgetPassword: boolean;
+     canResetPassword: boolean;
+     canUpdatePassword: boolean;
+     canUpdateProfile: boolean;
+
+     // user managment
+     canViewUsers: boolean;
+     canWriteUsers: boolean;
 }

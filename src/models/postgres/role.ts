@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne, OneToMany } from "typeorm";
 
 // MODELS
 import { User } from "./user";
@@ -16,6 +16,6 @@ export class Role extends AppBaseModel {
      privlegesTemplateId!: string;
 
      // RELATIONS
-     @OneToOne(() => User, (user) => user.roleId, { nullable: true })
-     userId!: User;
+     @OneToMany(() => User, (user) => user.roleId, { nullable: true })
+     users!: User[];
 }

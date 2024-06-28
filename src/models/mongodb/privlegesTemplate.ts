@@ -4,10 +4,34 @@ import { Schema, model } from "mongoose";
 import { PrivlegesTemplateSchema } from "@/types/models/privlegesTemplate";
 
 const privlegeTemplateSchema = new Schema<PrivlegesTemplateSchema>({
-     roleId: {
-          type: String,
-          require: [true, "user id is required"]
-     }
+     canLogin: {
+          type: Boolean,
+          default: false,
+     },
+     canForgetPassword: {
+          type: Boolean,
+          default: false,
+     },
+     canResetPassword: {
+          type: Boolean,
+          default: false,
+     },
+     canUpdatePassword: {
+          type: Boolean,
+          default: false,
+     },
+     canUpdateProfile: {
+          type: Boolean,
+          default: false,
+     },
+     canViewUsers: {
+          type: Boolean,
+          default: false,
+     },
+     canWriteUsers: {
+          type: Boolean,
+          default: false,
+     },
 })
 
 export default model("PrivlegeTemplates", privlegeTemplateSchema);

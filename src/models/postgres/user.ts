@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, OneToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, OneToMany, ManyToOne } from "typeorm";
 
 // MODELS
 import { Role } from "./role";
@@ -31,10 +31,10 @@ export class User extends AppBaseModel {
      @Column({ name: "password" })
      password!: string;
 
-     @Column({ name: "password_reset_token", type: "timestamptz" })
+     @Column({ name: "password_reset_token", type: "timestamptz", nullable: true })
      passwordResetToken!: Date;
 
-     @Column({ name: "password_reset_token_expiry", type: "timestamptz" })
+     @Column({ name: "password_reset_token_expiry", type: "timestamptz", nullable: true })
      passwordResetTokenExpiry!: Date;
 
      @Column({ name: "is_active", default: false })
@@ -48,7 +48,7 @@ export class User extends AppBaseModel {
      @JoinColumn({ name: "avatar_id", referencedColumnName: "id" })
      avatarId!: Avatar;
 
-     @OneToOne(() => Role, (role) => role.userId, { nullable: true })
+     @ManyToOne(() => Role, (role) => role.users, { nullable: true })
      @JoinColumn({ name: "role_id", referencedColumnName: "id" })
      roleId!: Role;
 

@@ -6,6 +6,9 @@ import mongodbConnection from "@/connections/mongodb"
 import { redisConnection } from "./connections/redis"
 import { checkDB, postgresConnection } from "./connections/postgres"
 
+// CONTROLLERS
+import { seedSupperUser } from "./controllers/_seed"
+
 // DOTENV CONFIGURATION
 dotenv.config();
 
@@ -29,6 +32,9 @@ const runApp = async () => {
 
           // start the connection with the redis server
           await redisConnection();
+
+          // seed supper user
+          await seedSupperUser();
 
           // listen to the server
           app.listen(process.env.PORT, () => console.log("auth service is running"));
