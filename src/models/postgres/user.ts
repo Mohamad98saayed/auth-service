@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, OneToMany, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, OneToMany, ManyToOne, BeforeInsert, BeforeUpdate } from "typeorm";
+import bcrypt from "bcryptjs";
+import crypto from "node:crypto";
 
 // MODELS
 import { Role } from "./role";
@@ -32,7 +34,7 @@ export class User extends AppBaseModel {
      password!: string;
 
      @Column({ name: "password_reset_token", type: "timestamptz", nullable: true })
-     passwordResetToken!: Date;
+     passwordResetToken!: string;
 
      @Column({ name: "password_reset_token_expiry", type: "timestamptz", nullable: true })
      passwordResetTokenExpiry!: Date;
@@ -62,4 +64,23 @@ export class User extends AppBaseModel {
      documents!: Document[];
 
      // TODO: company from different service
+
+     // hash password before saving
+     @BeforeInsert()
+     @BeforeUpdate()
+     async hashPassword() {
+          this.password = await bcrypt.hash(this.password, 12);
+     }
+
+     // compare passwords
+     async comparePassword(plainTextPassword: string): Promise<boolean> {
+          return await bcrypt.compare(plainTextPassword, this.password);
+     }
+
+     async getPasswordResetToken() {
+          const resetToken = crypto.randomBytes(20).toString("hex");
+          this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+          this.passwordResetTokenExpiry = new Date(Date.now() + 30 * 60 * 1000);
+          return resetToken;
+     }
 }

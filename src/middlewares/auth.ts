@@ -6,7 +6,7 @@ import { userRepo } from "@/connections/postgres";
 import privlegesModel from "@/models/mongodb/privleges";
 
 // UTILS
-import i18n from "./i18n";
+import i18n from "@/utils/i18n";
 import catchAsync from "@/utils/catchAsync";
 import ErrorHandler from "@/utils/errorHandler";
 
@@ -18,6 +18,7 @@ import { CustomJWTPayload } from "@/types/general/general";
 // CHECKS IF USER IS LOGGED IN
 export const isAuthenticated = catchAsync(async (req: CustomRequest, _res: Response, next: NextFunction) => {
      // extract token from cookies
+     console.log(req.cookies);
      const { token } = req.cookies;
      if (!token) return next(new ErrorHandler(i18n.__("user-not-auth"), 401));
 
