@@ -22,7 +22,7 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404))
      const isPasswordMatches = await user.comparePassword(password);
      if (!isPasswordMatches) return next(new ErrorHandler(i18n.__("something-wrong"), 400));
-     sendToken(user, 201, res);
+     sendToken(user, 200, res);
 });
 
 /*
