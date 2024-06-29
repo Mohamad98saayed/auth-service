@@ -27,11 +27,11 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
           const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`) as CustomJWTPayload;
 
           // if valid check if user with the saved id exists
-          const user = await userRepo.findOne({ where: { id: decodedToken.id } });
+          const user = await userRepo.findOne({ where: { id: decodedToken.id }, select: ["id", "privlegesId"] })
           if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
           // get user privleges document
-          const privlegesDoc = await privlegesModel.findOne({ where: { userId: user.id } });
+          const privlegesDoc = await privlegesModel.findById(user.privlegesId);
           if (!privlegesDoc) return next(new ErrorHandler(i18n.__("privleges-doc-not-found"), 404));
 
           // save the user info in the req
@@ -46,7 +46,7 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
                const decodedToken = jwt.decode(token) as CustomJWTPayload;
 
                // check user existance
-               const user = await userRepo.findOneBy({ id: decodedToken.id })
+               const user = await userRepo.findOne({ where: { id: decodedToken.id }, select: ["id", "privlegesId"] })
                if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
                // send a new token 
