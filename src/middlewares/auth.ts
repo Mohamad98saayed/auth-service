@@ -1,5 +1,5 @@
-import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { Response, NextFunction } from "express";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 
 // MODELS
 import { userRepo } from "@/connections/postgres";
