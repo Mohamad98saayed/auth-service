@@ -10,5 +10,6 @@
 	"email-must-be-an-email": "يجب أن يكون البريد الإلكتروني عنوان بريد إلكتروني صالح",
 	"field-(phone)-with-value-(VALUE)-already-exists": "field-(phone)-with-value-(VALUE)-already-exists",
 	"field-(email)-with-value-(VALUE)-already-exists": "field-(email)-with-value-(VALUE)-already-exists",
-	"(phone)-(VALUE)-duplicate-error": "(phone)-(VALUE)-duplicate-error"
+	"(phone)-(VALUE)-duplicate-error": "(phone)-(VALUE)-duplicate-error",
+	"(email)-(VALUE)-duplicate-error": "(email)-(VALUE)-duplicate-error"
 }

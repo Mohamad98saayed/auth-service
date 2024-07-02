@@ -77,25 +77,10 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
           res.status(201).json({ success: true, user })
      } catch (error: any) {
           // delete created privleges document
-          await privleges.deleteOne(userPrivlegesDocument._id);
+          if (userPrivlegesDocument._id) await privleges.deleteOne(userPrivlegesDocument._id);
 
-          // check if error is duplicate key violation
-          if (error.code === "23505") {
-               const duplicateError = parseDuplicateKeyError(error);
-               const message = i18n.__(`(${duplicateError.key})-(VALUE)-duplicate-error`).replace('VALUE', duplicateError.value);
-               return next(new ErrorHandler(message, 404));
-          }
-
-          return next(new ErrorHandler(i18n.__("something-wrong"), 404));
+          // throw error so error middleware can handle this error
+          throw error;
      }
 
 })
-
-/*
-1 - login
-2 - register
-3 - forget password
-4 - reset password
-5 - activate account by email
-6 - get logged in user
-*/
