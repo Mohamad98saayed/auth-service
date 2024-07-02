@@ -1,11 +1,14 @@
 {
-  "language": "عربي",
-  "user-not-auth": "المستخدم غير مصرح له",
-  "provide-missing-fields": "يرجى تقديم الحقول المفقودة",
-  "something-wrong": "حدث خطأ ما، يرجى المحاولة مرة أخرى",
-  "user-forbidden": "المستخدم لا يملك الإذن",
-  "user-not-found": "المستخدم غير موجود",
-  "password-should-not-be-empty": "يجب ألا تكون كلمة المرور فارغة",
-  "password-must-be-a-string": "يجب أن تكون كلمة المرور نصية",
-  "email-must-be-an-email": "يجب أن يكون البريد الإلكتروني عنوان بريد إلكتروني صالح"
+	"language": "عربي",
+	"user-not-auth": "المستخدم غير مصرح له",
+	"provide-missing-fields": "يرجى تقديم الحقول المفقودة",
+	"something-wrong": "حدث خطأ ما، يرجى المحاولة مرة أخرى",
+	"user-forbidden": "المستخدم لا يملك الإذن",
+	"user-not-found": "المستخدم غير موجود",
+	"password-should-not-be-empty": "يجب ألا تكون كلمة المرور فارغة",
+	"password-must-be-a-string": "يجب أن تكون كلمة المرور نصية",
+	"email-must-be-an-email": "يجب أن يكون البريد الإلكتروني عنوان بريد إلكتروني صالح",
+	"field-(phone)-with-value-(VALUE)-already-exists": "field-(phone)-with-value-(VALUE)-already-exists",
+	"field-(email)-with-value-(VALUE)-already-exists": "field-(email)-with-value-(VALUE)-already-exists",
+	"(phone)-(VALUE)-duplicate-error": "(phone)-(VALUE)-duplicate-error"
 }

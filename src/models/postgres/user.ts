@@ -21,13 +21,13 @@ export class User extends AppBaseModel {
      @Column({ name: "lastname" })
      lastname!: string;
 
-     @Column({ name: "phone" })
+     @Column({ name: "phone", unique: true })
      phone!: string;
 
-     @Column({ name: "email" })
+     @Column({ name: "email", unique: true })
      email!: string;
 
-     @Column({ name: "username" })
+     @Column({ name: "username", unique: true })
      username!: string;
 
      @Column({ name: "password" })
@@ -42,7 +42,7 @@ export class User extends AppBaseModel {
      @Column({ name: "is_active", default: false })
      isActive!: boolean;
 
-     @Column({ name: "privleges_id" })
+     @Column({ name: "privleges_id", unique: true })
      privlegesId!: string;
 
      // RELATIONS
@@ -77,6 +77,7 @@ export class User extends AppBaseModel {
           return await bcrypt.compare(plainTextPassword, this.password);
      }
 
+     // generate a new reset token
      async getPasswordResetToken() {
           const resetToken = crypto.randomBytes(20).toString("hex");
           this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");

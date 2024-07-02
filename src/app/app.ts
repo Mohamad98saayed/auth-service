@@ -15,7 +15,6 @@ import i18n from "@/utils/i18n";
 
 // ROUTER
 import authRouter from "@/routes/auth";
-import { isAuthenticated, isAuthorized } from "@/middlewares/auth";
 
 // EXPRESS APP
 const app = express();
@@ -36,12 +35,6 @@ app.use(setLocale);
 
 // APPEND ROUTES
 app.use("/api/v1/auth", authRouter);
-
-app.get("/test", isAuthenticated, isAuthorized("canLogin"), (req, res, next) => {
-     res.status(200).json({
-          message: "success"
-     })
-})
 
 // APPEND ERROR MIDDLEWARE
 app.use(errorMiddleware);
