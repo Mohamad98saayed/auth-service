@@ -15,21 +15,19 @@ import { CustomRequest } from "@/types/general/general";
 // GET => /api/v1/users
 export const getAllUsers = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
      // create a query from users table
-     let query = userRepo.createQueryBuilder("users");
+     const query = userRepo.createQueryBuilder("users");
+
+     // allowed search fields
+     const searchFields = ["username", "firstname", "lastname", "email", "phone"]
 
      // add query features params
-     const features = new PgApiFeatures(query, req.query, "users")
-          .filter().sort().search(["username", "firstname", "lastname", "email", "phone"]).limitFields().paginate();
+     const apiFeatures = new PgApiFeatures(query, req.query, "users")
+          .filter().sort().search(searchFields).limitFields().paginate().getQuery();
 
-     // update the query
-     query = features.getQuery();
-
-     // get params info
+     // prepare the response info
      const params = req.query;
      const rows = await userRepo.count();
-
-     // get users
-     const users = await query.getMany();
+     const users = await apiFeatures.getMany();
 
      res.status(200).json({ rows, ...params, results: users })
 });
