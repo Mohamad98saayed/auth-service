@@ -15,6 +15,7 @@ import i18n from "@/utils/i18n";
 
 // ROUTER
 import authRouter from "@/routes/auth";
+import userRouter from "@/routes/user";
 
 // EXPRESS APP
 const app = express();
@@ -35,6 +36,7 @@ app.use(setLocale);
 
 // APPEND ROUTES
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users", userRouter);
 
 // APPEND ERROR MIDDLEWARE
 app.use(errorMiddleware);

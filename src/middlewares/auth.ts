@@ -27,7 +27,7 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
           const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`) as CustomJWTPayload;
 
           // if valid check if user with the saved id exists
-          const user = await userRepo.findOne({ where: { id: decodedToken.id }, select: ["id", "privlegesId", "username"] })
+          const user = await userRepo.findOne({ where: { id: decodedToken.id }, select: ["id", "privlegesId", "isActive", "username"] })
           if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
           // get user privleges document
@@ -60,6 +60,10 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
 // CHECK IF USER IS AUTHORIZED
 export const isAuthorized = <K extends keyof PrivlegesSchema>(action: K) =>
      catchAsync(async (req: CustomRequest, _res: Response, next: NextFunction) => {
+          // check if user is active
+          const isUserActive = req.user.isActive;
+          if (!isUserActive) return next(new ErrorHandler(i18n.__("user-not-active"), 403))
+
           // extract the corresponding authorization value of the action
           const hasAuthority = req.privleges[action];
 

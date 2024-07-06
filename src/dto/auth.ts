@@ -1,8 +1,6 @@
 import { IsString, IsNotEmpty, IsEmail } from "class-validator";
 
 // MODELS
-import { Role } from "@/models/postgres/role";
-
 export class LoginInputModel {
      @IsEmail()
      email!: string

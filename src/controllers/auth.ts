@@ -12,7 +12,7 @@ import i18n from "@/utils/i18n";
 import { sendToken } from "@/utils/jwt";
 import catchAsync from "@/utils/catchAsync";
 import ErrorHandler from "@/utils/errorHandler";
-import { generateUniqueUsername, parseDuplicateKeyError } from "@/utils/utilities";
+import { generateUniqueUsername } from "@/utils/utilities";
 
 // TYPES & DTOs
 import { CustomRequest } from "@/types/general/general";
@@ -24,7 +24,7 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
      const { email, password } = req.body as LoginInputModel;
 
      // check if user with this email exists
-     const user = await userRepo.findOne({ where: { email }, select: ["id", "password", "privlegesId"] })
+     const user = await userRepo.findOne({ where: { email }, select: ["id", "password", "isActive", "privlegesId"] })
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
      // check if passwords mathces
@@ -33,6 +33,9 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
 
      // remove password before response
      user.password = undefined as never;
+
+     // check if user account activated
+     if (!user.isActive) return next(new ErrorHandler(i18n.__("user-not-active"), 403))
 
      // send response with token
      sendToken(user, 200, res);
@@ -74,7 +77,7 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
                firstname, lastname, email, password, phone, username, privlegesId: userPrivlegesDocument.id, createdBy: currentUser
           }).save();
 
-          res.status(201).json({ success: true, user })
+          res.status(201).json({ user })
      } catch (error: any) {
           // delete created privleges document
           if (userPrivlegesDocument._id) await privleges.deleteOne(userPrivlegesDocument._id);
@@ -82,5 +85,4 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
           // throw error so error middleware can handle this error
           throw error;
      }
-
-})
+});

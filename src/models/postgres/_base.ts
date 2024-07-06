@@ -13,4 +13,10 @@ export class AppBaseModel extends BaseEntity {
 
      @Column({ name: "updated_by", nullable: true })
      updatedBy!: string;
+
+     @Column({ name: "archived", nullable: true })
+     archived!: boolean;
+
+     @Column({ name: "archived_by", nullable: true })
+     archivedBy!: string;
 }

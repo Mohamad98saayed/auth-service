@@ -20,7 +20,6 @@ export default (err: any, _req: Request, res: Response, _next: NextFunction) => 
      }
 
      res.status(err.statusCode).json({
-          success: false,
           message: err.message,
           stack: err.stack,
      });

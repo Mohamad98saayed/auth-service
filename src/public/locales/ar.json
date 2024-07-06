@@ -8,8 +8,11 @@
 	"password-should-not-be-empty": "يجب ألا تكون كلمة المرور فارغة",
 	"password-must-be-a-string": "يجب أن تكون كلمة المرور نصية",
 	"email-must-be-an-email": "يجب أن يكون البريد الإلكتروني عنوان بريد إلكتروني صالح",
-	"field-(phone)-with-value-(VALUE)-already-exists": "field-(phone)-with-value-(VALUE)-already-exists",
-	"field-(email)-with-value-(VALUE)-already-exists": "field-(email)-with-value-(VALUE)-already-exists",
-	"(phone)-(VALUE)-duplicate-error": "(phone)-(VALUE)-duplicate-error",
-	"(email)-(VALUE)-duplicate-error": "(email)-(VALUE)-duplicate-error"
+	"field-(phone)-with-value-(VALUE)-already-exists": "الحقل (الهاتف) ذو القيمة (VALUE) موجود بالفعل",
+	"field-(email)-with-value-(VALUE)-already-exists": "الحقل (البريد الإلكتروني) ذو القيمة (VALUE) موجود بالفعل",
+	"(phone)-(VALUE)-duplicate-error": "خطأ التكرار: الهاتف (VALUE)",
+	"(email)-(VALUE)-duplicate-error": "خطأ التكرار: البريد الإلكتروني (VALUE)",
+	"privleges-doc-not-found": "لم يتم العثور على وثيقة الصلاحيات",
+	"role-not-found": "لم يتم العثور على الدور",
+	"user-not-active": "user-not-active"
 }
