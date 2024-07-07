@@ -1,7 +1,7 @@
 import express from "express";
 
 // CONTROLLER
-import { login, createUser } from "@/controllers/auth";
+import { login, createUser, getCurrentUser } from "@/controllers/auth";
 
 // MIDDLEWARES
 import dto from "@/middlewares/dto";
@@ -15,6 +15,7 @@ const router = express.Router();
 
 // ENDPOINTS
 router.post("/login", dto(LoginInputModel), login);
-router.post("/create-user", isAuthenticated, isAuthorized("canWriteUsers"), dto(CreateUserInputModel), createUser)
+router.post("/create-user", isAuthenticated, isAuthorized("canWriteUsers"), dto(CreateUserInputModel), createUser);
+router.get("/current-user", isAuthenticated, getCurrentUser);
 
 export default router;

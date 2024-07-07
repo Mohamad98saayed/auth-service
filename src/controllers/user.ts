@@ -14,15 +14,16 @@ import { CustomRequest } from "@/types/general/general";
 
 // GET => /api/v1/users
 export const getAllUsers = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
-     // create a query from users table
-     const query = userRepo.createQueryBuilder("users");
-
      // allowed search fields
-     const searchFields = ["username", "firstname", "lastname", "email", "phone"]
+     const searchFields = ["username", "firstname", "lastname", "email", "phone"];
+
+     // create a query from users table
+     const query = userRepo.createQueryBuilder("u")
+          .leftJoinAndSelect("u.roleId", "r")
 
      // add query features params
-     const apiFeatures = new PgApiFeatures(query, req.query, "users")
-          .filter().sort().search(searchFields).limitFields().paginate().getQuery();
+     const apiFeatures = new PgApiFeatures(query, req.query, "u")
+          .filter().sort().search(searchFields).paginate().getQuery();
 
      // prepare the response info
      const params = req.query;

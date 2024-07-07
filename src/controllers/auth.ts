@@ -24,7 +24,7 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
      const { email, password } = req.body as LoginInputModel;
 
      // check if user with this email exists
-     const user = await userRepo.findOne({ where: { email }, select: ["id", "password", "isActive", "privlegesId"] })
+     const user = await userRepo.findOne({ where: { email } })
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
      // check if passwords mathces
@@ -74,7 +74,7 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
      try {
           // create the user
           const user = await userRepo.create({
-               firstname, lastname, email, password, phone, username, privlegesId: userPrivlegesDocument.id, createdBy: currentUser
+               firstname, lastname, email, password, phone, username, privlegesId: userPrivlegesDocument.id, createdBy: currentUser, roleId: role
           }).save();
 
           res.status(201).json({ user })
@@ -85,4 +85,17 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
           // throw error so error middleware can handle this error
           throw error;
      }
+});
+
+// GET => /api/v1/auth/current-user
+export const getCurrentUser = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
+     // get user
+     const user = await userRepo.createQueryBuilder("u")
+          .leftJoinAndSelect("u.roleId", "r")
+          .where("u.id = :reqId", { reqId: req.user.id })
+          .getOne();
+
+     if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
+
+     res.status(200).json({ user, privleges: req.privleges });
 });
