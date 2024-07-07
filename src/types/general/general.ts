@@ -13,3 +13,13 @@ export interface CustomRequest extends Request {
 export interface CustomJWTPayload extends JwtPayload {
      id: string;
 }
+
+export interface GetAllBaseResponse<T> {
+     rows: number
+     page: number | null
+     limit: number | null
+     search: string | null
+     sort: string | null
+     order: string | null
+     data: T[]
+}
