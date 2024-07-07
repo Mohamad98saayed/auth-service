@@ -31,9 +31,6 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
      const isPasswordMatches = await user.comparePassword(password);
      if (!isPasswordMatches) return next(new ErrorHandler(i18n.__("something-wrong"), 400));
 
-     // remove password before response
-     user.password = undefined as never;
-
      // check if user account activated
      if (!user.isActive) return next(new ErrorHandler(i18n.__("user-not-active"), 403))
 
