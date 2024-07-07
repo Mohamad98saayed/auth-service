@@ -13,14 +13,12 @@ dotenv.config();
 export default (err: any, _req: Request, res: Response, _next: NextFunction) => {
      err.statusCode = err.statusCode || 500;
 
+     // when error is a duplicate key error
      if (err.code === "23505") {
           const duplicateError = parseDuplicateKeyError(err);
           const message = i18n.__(`(${duplicateError.key})-(VALUE)-duplicate-error`).replace('VALUE', duplicateError.value);
           err = new ErrorHandler(message, 404);
      }
 
-     res.status(err.statusCode).json({
-          message: err.message,
-          stack: err.stack,
-     });
+     res.status(err.statusCode).json({ message: err.message, stack: err.stack });
 };
