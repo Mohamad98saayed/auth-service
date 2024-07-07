@@ -3,7 +3,7 @@ import { JwtPayload } from "jsonwebtoken";
 
 // MODEL
 import { User } from "@/models/postgres/user";
-import { PrivlegesSchema } from "../models/privleges";
+import { PrivlegesSchema } from "./models/privleges";
 
 export interface CustomRequest extends Request {
      user: User;

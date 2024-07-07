@@ -15,7 +15,7 @@ import ErrorHandler from "@/utils/errorHandler";
 import { generateUniqueUsername } from "@/utils/utilities";
 
 // TYPES & DTOs
-import { CustomRequest } from "@/types/general/general";
+import { CustomRequest } from "@/types/general";
 import { LoginInputModel, CreateUserInputModel } from "@/dto/auth";
 
 // POST => /api/v1/auth/login
@@ -24,7 +24,7 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
      const { email, password } = req.body as LoginInputModel;
 
      // check if user with this email exists
-     const user = await userRepo.findOne({ where: { email } })
+     const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.email = :email", { email }).getOne();
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
      // check if passwords mathces
@@ -47,7 +47,7 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
      const { firstname, lastname, email, password, phone, roleId } = req.body as CreateUserInputModel;
 
      // check for role id
-     const role = await roleRepo.findOneBy({ id: roleId });
+     const role = await roleRepo.createQueryBuilder("r").where("r.id = :id", { id: roleId }).getOne();
      if (!role) return next(new ErrorHandler(i18n.__("role-not-found"), 404));
 
      // get privleges documents
@@ -56,11 +56,6 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
 
      // create a privleges document for the user
      const userPrivlegesDocument = await privleges.create({
-          canLogin: rolePrivlegesDocument.canLogin,
-          canForgetPassword: rolePrivlegesDocument.canForgetPassword,
-          canResetPassword: rolePrivlegesDocument.canResetPassword,
-          canUpdatePassword: rolePrivlegesDocument.canUpdatePassword,
-          canUpdateProfile: rolePrivlegesDocument.canUpdateProfile,
           canViewUsers: rolePrivlegesDocument.canViewUsers,
           canWriteUsers: rolePrivlegesDocument.canWriteUsers,
      });
@@ -86,13 +81,7 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
 
 // GET => /api/v1/auth/current-user
 export const getCurrentUser = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
-     // get user
-     const user = await userRepo.createQueryBuilder("u")
-          .leftJoinAndSelect("u.roleId", "r")
-          .where("u.id = :reqId", { reqId: req.user.id })
-          .getOne();
-
+     const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.id = :id", { id: req.user.id }).getOne();
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
-
      res.status(200).json({ user, privleges: req.privleges });
 });

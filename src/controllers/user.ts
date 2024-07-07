@@ -1,6 +1,7 @@
 import { Response, NextFunction } from "express";
 
 // MODELS
+import { User } from "@/models/postgres/user";
 import { userRepo } from "@/connections/postgres";
 
 // UTILS
@@ -10,8 +11,7 @@ import ErrorHandler from "@/utils/errorHandler";
 import PgApiFeatures from "@/utils/pgApiFeatures";
 
 // TYPES & DTOs
-import { CustomRequest, GetAllBaseResponse } from "@/types/general/general";
-import { User } from "@/models/postgres/user";
+import { CustomRequest, GetAllBaseResponse } from "@/types/general";
 
 // GET => /api/v1/users
 export const getAllUsers = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -37,3 +37,10 @@ export const getAllUsers = catchAsync(async (req: CustomRequest, res: Response, 
 
      res.status(200).json({ ...response })
 });
+
+// GET => /api/v1/users/:id
+export const getOneUser = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
+     const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.id = :id", { id: req.params.id }).getOne()
+     if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404))
+     res.status(200).json(user)
+})

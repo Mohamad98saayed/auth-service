@@ -12,9 +12,9 @@ import catchAsync from "@/utils/catchAsync";
 import ErrorHandler from "@/utils/errorHandler";
 
 // TYPES
-import { CustomRequest } from "@/types/general/general";
+import { CustomRequest } from "@/types/general";
 import { PrivlegesSchema } from "@/types/models/privleges";
-import { CustomJWTPayload } from "@/types/general/general";
+import { CustomJWTPayload } from "@/types/general";
 
 // CHECKS IF USER IS LOGGED IN
 export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -27,7 +27,7 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
           const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`) as CustomJWTPayload;
 
           // if valid check if user with the saved id exists
-          const user = await userRepo.findOne({ where: { id: decodedToken.id } })
+          const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.id = :id", { id: decodedToken.id }).getOne()
           if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
           // get user privleges document
@@ -46,7 +46,7 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
                const decodedToken = jwt.decode(token) as CustomJWTPayload;
 
                // check user existance
-               const user = await userRepo.findOne({ where: { id: decodedToken.id } })
+               const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.id = :id", { id: decodedToken.id }).getOne()
                if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
                // send a new token 

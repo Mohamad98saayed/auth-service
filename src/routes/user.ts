@@ -1,7 +1,7 @@
 import express from "express";
 
 // CONTROLLER
-import { getAllUsers } from "@/controllers/user";
+import { getAllUsers, getOneUser } from "@/controllers/user";
 
 // MIDDLEWARES
 import { isAuthenticated, isAuthorized } from "@/middlewares/auth";
@@ -11,5 +11,6 @@ const router = express.Router();
 
 // ENDPOINTS
 router.get("/", isAuthenticated, isAuthorized("canViewUsers"), getAllUsers)
+router.get("/:id", isAuthenticated, isAuthorized("canViewUsers"), getOneUser)
 
 export default router;

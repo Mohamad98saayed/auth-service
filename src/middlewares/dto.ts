@@ -8,7 +8,7 @@ import catchAsync from "@/utils/catchAsync";
 import ErrorHandler from "@/utils/errorHandler";
 
 // TYPES
-import { CustomRequest } from "@/types/general/general";
+import { CustomRequest } from "@/types/general";
 
 // DTO VALIDATOR
 const dto = (dto: any) =>

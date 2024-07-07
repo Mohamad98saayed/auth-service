@@ -18,29 +18,19 @@ export const seedSupperUser = async () => {
 
           // create role privleges template
           const privlegeTemplate = await privlegesTemplate.create({
-               canLogin: true,
-               canForgetPassword: true,
-               canResetPassword: true,
-               canUpdatePassword: true,
-               canUpdateProfile: true,
                canViewUsers: true,
-               canWriteUsers: true
+               canWriteUsers: true,
           });
 
           // create role
           const role = await roleRepo.create({
                name: process.env.ROLE_NAME,
                privlegesTemplateId: privlegeTemplate.id,
-               createdBy: process.env.FLEET_SYSTEM
+               createdBy: process.env.SYSTEM_NAME
           }).save();
 
           // create privleges document
           const privlegesDocument = await privleges.create({
-               canLogin: privlegeTemplate.canLogin,
-               canForgetPassword: privlegeTemplate.canForgetPassword,
-               canResetPassword: privlegeTemplate.canResetPassword,
-               canUpdatePassword: privlegeTemplate.canUpdatePassword,
-               canUpdateProfile: privlegeTemplate.canUpdateProfile,
                canViewUsers: privlegeTemplate.canViewUsers,
                canWriteUsers: privlegeTemplate.canWriteUsers
           });
@@ -56,7 +46,7 @@ export const seedSupperUser = async () => {
                roleId: role,
                isActive: true,
                privlegesId: privlegesDocument.id,
-               createdBy: process.env.FLEET_SYSTEM
+               createdBy: process.env.SYSTEM_NAME
           }).save();
 
      } catch (error) {
