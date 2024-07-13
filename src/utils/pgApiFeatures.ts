@@ -6,7 +6,7 @@ class PgApiFeatures<T extends ObjectLiteral> {
      // filtering
      filter() {
           const queryObj = { ...this.queryString };
-          const excludeFields = ['page', 'sort', 'order', 'limit', 'search'];
+          const excludeFields = ['page', 'sort', 'order', 'limit', 'search', 'fields'];
           excludeFields.forEach(el => delete queryObj[el]);
           let queryStr = JSON.stringify(queryObj);
           queryStr = queryStr.replace(/\b(gte|gt|lte|lt|ne)\b/g, (match) => `$${match}`);
@@ -44,6 +44,19 @@ class PgApiFeatures<T extends ObjectLiteral> {
                this.query = this.query.andWhere(new Brackets(qb => {
                     qb.where(searchQuery, { search: `%${this.queryString.search}%` });
                }));
+          }
+          return this;
+     }
+
+     // limit fields
+     limitFields() {
+          if (this.queryString.fields) {
+               const fields = this.queryString.fields.split(',').map((field: string) => {
+                    const [a, f] = field.split(".");
+                    return `${a}.${f}`
+               });
+
+               this.query = this.query.select(fields);
           }
           return this;
      }

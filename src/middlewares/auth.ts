@@ -26,12 +26,20 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
           // check if token still valid
           const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`) as CustomJWTPayload;
 
-          // if valid check if user with the saved id exists
-          const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.id = :id", { id: decodedToken.id }).getOne()
+          // get user
+          const user = await userRepo
+               .createQueryBuilder("user")
+               .leftJoinAndSelect("user.roleId", "role")
+               .where("user.id = :id", { id: decodedToken.id })
+               .getOne();
+
+          // check if user exists
           if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
           // get user privleges document
           const privlegesDoc = await privlegesModel.findById(user.privlegesId);
+
+          // check if privliges document exists
           if (!privlegesDoc) return next(new ErrorHandler(i18n.__("privleges-doc-not-found"), 404));
 
           // save the user info in the req
@@ -45,8 +53,14 @@ export const isAuthenticated = catchAsync(async (req: CustomRequest, res: Respon
                // decode token 
                const decodedToken = jwt.decode(token) as CustomJWTPayload;
 
-               // check user existance
-               const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.id = :id", { id: decodedToken.id }).getOne()
+               // get user
+               const user = await userRepo
+                    .createQueryBuilder("user")
+                    .leftJoinAndSelect("user.roleId", "role")
+                    .where("user.id = :id", { id: decodedToken.id })
+                    .getOne();
+
+               // check if user exists
                if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
                // send a new token 

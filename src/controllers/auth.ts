@@ -23,8 +23,14 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
      // extract data from body
      const { email, password } = req.body as LoginInputModel;
 
-     // check if user with this email exists
-     const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.email = :email", { email }).getOne();
+     // get user
+     const user = await userRepo
+          .createQueryBuilder("user")
+          .leftJoinAndSelect("user.roleId", "role")
+          .where("user.email = :email", { email })
+          .getOne();
+
+     // check if user exists
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
 
      // check if passwords mathces
@@ -46,12 +52,19 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
      // extract data from body
      const { firstname, lastname, email, password, phone, roleId } = req.body as CreateUserInputModel;
 
-     // check for role id
-     const role = await roleRepo.createQueryBuilder("r").where("r.id = :id", { id: roleId }).getOne();
+     // get role
+     const role = await roleRepo
+          .createQueryBuilder("role")
+          .where("role.id = :id", { id: roleId })
+          .getOne();
+
+     // check if role exists
      if (!role) return next(new ErrorHandler(i18n.__("role-not-found"), 404));
 
      // get privleges documents
      const rolePrivlegesDocument = await privlegesTemplate.findById(role.privlegesTemplateId);
+
+     // check if privliges document exists
      if (!rolePrivlegesDocument) return next(new ErrorHandler(i18n.__("privleges-template-not-found"), 404));
 
      // create a privleges document for the user
@@ -81,7 +94,15 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
 
 // GET => /api/v1/auth/current-user
 export const getCurrentUser = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
-     const user = await userRepo.createQueryBuilder("u").leftJoinAndSelect("u.roleId", "r").where("u.id = :id", { id: req.user.id }).getOne();
+     // get user
+     const user = await userRepo
+          .createQueryBuilder("user")
+          .leftJoinAndSelect("user.roleId", "role")
+          .where("user.id = :id", { id: req.user.id })
+          .getOne();
+
+     // check if user exists
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
+
      res.status(200).json({ user, privleges: req.privleges });
 });
