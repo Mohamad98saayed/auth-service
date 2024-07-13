@@ -1,6 +1,6 @@
+import { validate } from "class-validator";
 import { Response, NextFunction } from "express";
 import { plainToInstance } from "class-transformer";
-import { validate, ValidationError } from "class-validator";
 
 // UTILS
 import i18n from "@/utils/i18n";

@@ -30,15 +30,16 @@ export const login = catchAsync(async (req: CustomRequest, res: Response, next: 
           .where("user.email = :email", { email })
           .getOne();
 
+
      // check if user exists
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
+
+     // check if user account activated
+     if (!user.isActive) return next(new ErrorHandler(i18n.__("user-not-active"), 403));
 
      // check if passwords mathces
      const isPasswordMatches = await user.comparePassword(password);
      if (!isPasswordMatches) return next(new ErrorHandler(i18n.__("something-wrong"), 400));
-
-     // check if user account activated
-     if (!user.isActive) return next(new ErrorHandler(i18n.__("user-not-active"), 403))
 
      // send response with token
      sendToken(user, 200, res);
@@ -82,7 +83,10 @@ export const createUser = catchAsync(async (req: CustomRequest, res: Response, n
                firstname, lastname, email, password, phone, username, privlegesId: userPrivlegesDocument.id, createdBy: currentUser, roleId: role
           }).save();
 
-          res.status(201).json({ user })
+          // TODO: send activation link
+          const emailVerificationToken = await user.getEmailVerificationToken();
+
+          res.status(201).json({ emailVerificationToken, user })
      } catch (error: any) {
           // delete created privleges document
           if (userPrivlegesDocument._id) await privleges.deleteOne(userPrivlegesDocument._id);
@@ -106,3 +110,88 @@ export const getCurrentUser = catchAsync(async (req: CustomRequest, res: Respons
 
      res.status(200).json({ user, privleges: req.privleges });
 });
+
+// GET => /api/v1/auth/forget-password
+export const forgetPassword = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
+     // get email from body
+     const { email } = req.body as { email: string };
+
+     // get user
+     const user = await userRepo
+          .createQueryBuilder("user")
+          .where("user.email = :email", { email })
+          .getOne();
+
+     // check if user with this email exists
+     if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
+
+     // check if user is active
+     if (!user.isActive) return next(new ErrorHandler(i18n.__("user-not-active"), 403));
+
+     // generate a reset token
+     const token = await user.getPasswordResetToken();
+
+     // TODO: notify by email
+
+     res.status(200).json({ token });
+})
+
+// PUT => /api/v1/auth/reset-password/:token
+export const resetPassword = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
+     // get token from params
+     const { token } = req.params as { token: string };
+
+     // find user with this token
+     const user = await userRepo
+          .createQueryBuilder("user")
+          .where("user.passwordResetToken = :token", { token })
+          .getOne();
+
+     // check if user exists
+     if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
+
+     // check if expiry date is still valid
+     const now = new Date(Date.now()).getTime();
+     const isTokenValid = user.passwordResetTokenExpiry.getTime() > now;
+     if (!isTokenValid) return next(new ErrorHandler(i18n.__("reset-token-expired"), 400))
+
+     // get password from body
+     const { password } = req.body as { password: string };
+
+     // update user
+     user.password = password;
+     user.passwordResetToken = null!;
+     user.passwordResetTokenExpiry = null!;
+
+     // save changes
+     await user.save();
+
+     res.status(200).json({});
+})
+
+// PUT => /api/v1/auth/email-verification/:token
+export const emailVerification = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
+     // get token from params
+     const { token } = req.params as { token: string };
+
+     // find user with this token
+     const user = await userRepo
+          .createQueryBuilder("user")
+          .where("user.emailVerificationToken = :token", { token })
+          .getOne();
+
+     // check if user exists
+     if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404));
+
+     // check if user has email verification token
+     if (!user.emailVerificationToken) return next(new ErrorHandler(i18n.__("user-verified"), 400));
+
+     // update user active status
+     user.isActive = true;
+     user.emailVerificationToken = null!;
+
+     // save changes
+     await user.save({ listeners: false });
+
+     res.status(200).json(user);
+})

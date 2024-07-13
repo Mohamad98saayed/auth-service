@@ -34,3 +34,14 @@ export class CreateUserInputModel {
      @IsNotEmpty()
      roleId!: string;
 }
+
+export class ForgetPasswordInputModule {
+     @IsEmail()
+     email!: string;
+}
+
+export class ResetPasswordInputModule {
+     @IsString()
+     @IsNotEmpty()
+     password!: string;
+}

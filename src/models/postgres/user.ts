@@ -33,7 +33,7 @@ export class User extends AppBaseModel {
      @Column({ name: "password" })
      password!: string;
 
-     @Column({ name: "password_reset_token", type: "timestamptz", nullable: true })
+     @Column({ name: "password_reset_token", nullable: true })
      passwordResetToken!: string;
 
      @Column({ name: "password_reset_token_expiry", type: "timestamptz", nullable: true })
@@ -41,6 +41,9 @@ export class User extends AppBaseModel {
 
      @Column({ name: "is_active", default: false })
      isActive!: boolean;
+
+     @Column({ name: "email_verification_token", nullable: true })
+     emailVerificationToken!: string;
 
      @Column({ name: "privleges_id", unique: true })
      privlegesId!: string;
@@ -79,9 +82,32 @@ export class User extends AppBaseModel {
 
      // generate a new reset token
      async getPasswordResetToken() {
-          const resetToken = crypto.randomBytes(20).toString("hex");
-          this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-          this.passwordResetTokenExpiry = new Date(Date.now() + 30 * 60 * 1000);
+          // generate a new token
+          const randomBytes = crypto.randomBytes(20).toString("hex");
+          const resetToken = crypto.createHash("sha256").update(randomBytes).digest("hex");
+
+          // save it to the user
+          this.passwordResetToken = resetToken;
+          this.passwordResetTokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+          // save the changes & preventing listeners
+          await this.save({ listeners: false });
+
+          // return the token
           return resetToken;
+     }
+
+     async getEmailVerificationToken() {
+          // generate a new token
+          const randomBytes = crypto.randomBytes(20).toString("hex");
+          const emailVerificationToken = crypto.createHash("sha256").update(randomBytes).digest("hex");
+
+          // save it to user
+          this.emailVerificationToken = emailVerificationToken;
+
+          // save it to user
+          await this.save({ listeners: false });
+
+          return emailVerificationToken;
      }
 }
