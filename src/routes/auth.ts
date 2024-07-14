@@ -16,7 +16,7 @@ const router = express.Router();
 // ENDPOINTS
 router.post("/login", dto(LoginInputModel), login);
 router.post("/create-user", isAuthenticated, isAuthorized("canWriteUsers"), dto(CreateUserInputModel), createUser);
-router.get("/current-user", isAuthenticated, getCurrentUser);
+router.get("/current-user", isAuthenticated, isAuthorized("canViewUsers"), getCurrentUser);
 router.get("/forget-password", dto(ForgetPasswordInputModule), forgetPassword);
 router.put("/reset-password/:token", dto(ResetPasswordInputModule), resetPassword);
 router.put("/email-verification/:token", emailVerification)

@@ -15,5 +15,9 @@
 	"privleges-doc-not-found": "لم يتم العثور على وثيقة الصلاحيات",
 	"role-not-found": "لم يتم العثور على الدور",
 	"user-not-active": "لم يتم تفعيل حساب المستخدم",
-	"reset-token-expired": "reset-token-expired"
+	"reset-token-expired": "reset-token-expired",
+	"oldPassword-should-not-be-empty": "oldPassword-should-not-be-empty",
+	"newPassword-should-not-be-empty": "newPassword-should-not-be-empty",
+	"profile-updated": "profile-updated",
+	"user-is-archived": "user-is-archived"
 }

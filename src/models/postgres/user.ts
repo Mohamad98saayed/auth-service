@@ -66,7 +66,8 @@ export class User extends AppBaseModel {
      @OneToMany(() => Document, (document) => document.userId, { nullable: true })
      documents!: Document[];
 
-     // TODO: company from different service
+     // TODO: company from different service (one user has one company);
+     // TODO: vehicle assigned from different service (one user has one vehicle);
 
      // hash password before saving
      @BeforeInsert()
@@ -97,6 +98,7 @@ export class User extends AppBaseModel {
           return resetToken;
      }
 
+     // generate a new email verification token
      async getEmailVerificationToken() {
           // generate a new token
           const randomBytes = crypto.randomBytes(20).toString("hex");

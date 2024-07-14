@@ -33,7 +33,7 @@ export const sendToken = (user: User, statusCode: number, res: Response) => {
      if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging")
           cookieOptions.secure = true
 
-     res.status(statusCode).cookie("token", token, cookieOptions).json({
+     res.status(statusCode).cookie(process.env.COOKIE_NAME!, token, cookieOptions).json({
           token,
           user
      })

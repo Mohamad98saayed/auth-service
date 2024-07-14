@@ -1,4 +1,4 @@
-import { BaseEntity, CreateDateColumn, UpdateDateColumn, Entity, Column } from "typeorm";
+import { BaseEntity, CreateDateColumn, UpdateDateColumn, Entity, Column, DeleteDateColumn } from "typeorm";
 
 @Entity()
 export class AppBaseModel extends BaseEntity {
@@ -8,15 +8,15 @@ export class AppBaseModel extends BaseEntity {
      @UpdateDateColumn({ name: "updated_at", type: "timestamptz" })
      updatedAt!: Date;
 
+     @DeleteDateColumn({ name: "deleted_at", type: "timestamptz" })
+     deletedAt!: Date;
+
      @Column({ name: "created_by", nullable: true })
      createdBy!: string;
 
      @Column({ name: "updated_by", nullable: true })
      updatedBy!: string;
 
-     @Column({ name: "archived", nullable: true })
-     archived!: boolean;
-
-     @Column({ name: "archived_by", nullable: true })
-     archivedBy!: string;
+     @Column({ name: "deleted_by", nullable: true })
+     deletedBy!: string;
 }
