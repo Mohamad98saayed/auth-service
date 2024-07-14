@@ -1,0 +1,47 @@
+name: Run build
+
+on:
+  push:
+    branches:
+      - development
+      - staging
+      - production
+
+jobs:
+  docker:
+    name: Build and push docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set Docker Image Tag
+        id: image_tag
+        run: |
+          if [[ "${{github.base_ref}}" == "production" || "${{github.ref}}" == "refs/heads/production" ]]; then
+            echo "::set-output name=IMAGE_TAG::production"
+          fi
+          if [[ "${{github.base_ref}}" == "staging" || "${{github.ref}}" == "refs/heads/staging" ]]; then
+            echo "::set-output name=IMAGE_TAG::staging"
+          fi
+          if [[ "${{github.base_ref}}" == "development" || "${{github.ref}}" == "refs/heads/development" ]]; then
+            echo "::set-output name=IMAGE_TAG::development"
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ghcr.io/mohamad98saayed/fleet-auth-service:${{ steps.image_tag.outputs.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
