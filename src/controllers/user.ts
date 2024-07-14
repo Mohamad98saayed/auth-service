@@ -69,4 +69,10 @@ export const getOneUser = catchAsync(async (req: CustomRequest, res: Response, n
      if (!user) return next(new ErrorHandler(i18n.__("user-not-found"), 404))
 
      res.status(200).json(user);
-})
+});
+
+// PUT /api/v1/users/avatar
+// PUT /api/v1/users/password
+// PUT /api/v1/users/details
+// PUT /api/v1/users/archive
+// PUT /api/v1/users/active/:id
