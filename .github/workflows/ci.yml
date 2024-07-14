@@ -41,6 +41,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ghcr.io/mohamad98saayed/auth-service:${{ steps.image_tag.outputs.IMAGE_TAG }}
+          tags: ghcr.io/mohamad98saayed/fleet-auth-service:${{ steps.image_tag.outputs.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
